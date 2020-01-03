@@ -1,0 +1,16 @@
+﻿<Window x:Class="EntityManager.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EntityManager.Views"
+        xmlns:core="clr-namespace:System;assembly=mscorlib"
+        xmlns:s="clr-namespace:EntityManager.Enums"
+        mc:Ignorable="d"
+        Title="EntityManager" Height="auto" MinHeight="600" Width="1680"
+        FontFamily="Consolas" >
+
+    <Border Padding="20 10 20 20" Background="#333">
+
+    </Border>
+</Window>
