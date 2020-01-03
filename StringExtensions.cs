@@ -1,29 +1,26 @@
 ﻿using System;
 using System.Linq;
 
-
 namespace EntityManager
 {
     public static class StringExtensions
     {
         public static string FirstCharToUpper(this string input)
         {
-            switch (input)
+            if (!string.IsNullOrEmpty(input))
             {
-                case null: throw new ArgumentNullException(nameof(input));
-                case "": return "";
-                default: return input.First().ToString().ToUpper() + input.Substring(1);
+                return input.First().ToString().ToUpper() + input.Substring(1);
             }
+            return string.Empty;
         }
 
         public static string FirstCharToLower(this string input)
         {
-            switch (input)
+            if (!string.IsNullOrEmpty(input))
             {
-                case null: throw new ArgumentNullException(nameof(input));
-                case "": return "";
-                default: return input.First().ToString().ToLower() + input.Substring(1);
+                return input.First().ToString().ToLower() + input.Substring(1);
             }
+            return string.Empty;
         }
 
         public static string DropSuffix(this string input, string suffix)
@@ -42,7 +39,7 @@ namespace EntityManager
         {
             return string.Concat(input.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
         }
-
+        
         public static string SnakeCaseToCamelCase(this string input)
         {
             if (string.IsNullOrEmpty(input))
