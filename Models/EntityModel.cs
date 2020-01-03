@@ -2,7 +2,7 @@
 {
     public class EntityModel
     {
-        private string _shortName;
+        private string _shortName = string.Empty;
         public string ShortName
         {
             get { return _shortName; }
