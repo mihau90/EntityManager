@@ -2,7 +2,12 @@
 {
     public class EntityModel
     {
-        public string ShortName { get; set; }
+        private string _shortName;
+        public string ShortName
+        {
+            get { return _shortName; }
+            set { _shortName = value.FirstCharToUpper(); }
+        }
         public string LongName
         {
             get
