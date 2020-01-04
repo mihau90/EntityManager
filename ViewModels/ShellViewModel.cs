@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Caliburn.Micro;
 using EntityManager.ConfigManagers;
 using EntityManager.Models;
@@ -130,7 +131,11 @@ namespace EntityManager.ViewModels
 
         public void Clear()
         {
-
+            if (MessageBoxResult.Yes == MessageBox.Show(
+                "Are you sure?", $"{ myName } { version }", MessageBoxButton.YesNo, MessageBoxImage.Question))
+            {
+                LoadInitialData();
+            }
         }
         #endregion
 
@@ -180,7 +185,29 @@ namespace EntityManager.ViewModels
         }
         private void LoadInitialData()
         {
-
+            TableName = string.Empty;
+            Entity = new EntityModel
+            {
+                ShortName = string.Empty
+            };
+            Properties = new BindableCollection<PropertyModel>();
+            Properties.Add(GetIdProperty());
+        }
+        private PropertyModel GetIdProperty()
+        {
+            return new PropertyModel()
+            {
+                PropertyName = "id",
+                PropertyType = "String",
+                ColumnName = "id",
+                ColumnType = "CHAR",
+                CharLimit = 38,
+                IsGet = true,
+                IsSet = false,
+                IsOptional = true,
+                PropertyDefaultValue = "AllHelpers.GUID.generate()",
+                Description = "record identification number @see: AllHelpers.Guid.generate()"
+            };
         }
         #endregion
     }
