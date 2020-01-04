@@ -2,27 +2,25 @@
 {
     public class FunctionModel
     {
-        private string _type;
-        public string Type
-        {
-            get { return _type; }
-            set 
-            { 
-                Name = value.Split('.')[1];
-                _type = value; 
-            }
-        }
+        public string Type { get; private set; }
         public string Name { get; private set; }
+        public string VbaName { get; private set; }
+        public string VbaDeclaration { get; private set; }
 
         public FunctionModel(string functionType)
         {
             this.Type = functionType;
+            Name = Type.Split('.')[1];
+            VbaName = $"Public Function new{ Name }() As AllInterfaces.FactorableInterface:";
+            VbaDeclaration = $"Set { Name } = New { Type }:";
         }
 
-        public string ToVba()
+        public string ToVba(int totalNameLen = 0, int totalDeclarationLen = 0 )
         {
-            return $"Public Function new{ Name }() As AllInterfaces.FactorableInterface: Set { Name } = New { Type }: End Function";
-        }
+            var paddedName = VbaName.PadRight(totalNameLen);
+            var paddedDeclaration = VbaDeclaration.PadRight(totalDeclarationLen);
 
+            return $"{ paddedName }{ paddedDeclaration } End Function";
+        }
     }
 }
