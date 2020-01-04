@@ -11,7 +11,7 @@ namespace EntityManager.ViewModels
 {
     public class ShellViewModel : Screen
     {
-        #region Private Variables
+        #region Private variables
         private const string version = "1.0.0";
         private const string myName = "EntityManager";
         private Dictionary<string, string> entitiyMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -64,10 +64,6 @@ namespace EntityManager.ViewModels
             }
         }
         #endregion
-
-
-        public int GetMaxTypeLenght() => Properties.Max(x => x.PropertyType.Length);
-        public int GetMaxNameLenght() => Properties.Max(x => x.PropertyName.Length);
 
         #region Constructor
         public ShellViewModel()
@@ -136,6 +132,11 @@ namespace EntityManager.ViewModels
         {
 
         }
+        #endregion
+
+        #region Public methods
+        public int GetMaxTypeLenght() => Properties.Max(x => x.PropertyType.Length);
+        public int GetMaxNameLenght() => Properties.Max(x => x.PropertyName.Length);
         #endregion
 
         #region Private methods
