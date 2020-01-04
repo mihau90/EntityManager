@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using System.IO;
 
-namespace EntityManager
+namespace EntityManager.ConfigManagers
 {
-    public class ConfigManager
+    public class ConfigManager : IConfigManager
     {
         public ConfigModel Config { get; private set; }
         public string ConfigFilePath { get; private set; }
@@ -14,13 +14,14 @@ namespace EntityManager
             this.ConfigFilePath = configFilePath;
             Config = Load();
         }
-        
-        public ConfigManager Save()
+
+        public IConfigManager Save()
         {
             string output = JsonConvert.SerializeObject(Config, Formatting.Indented);
             File.WriteAllText(ConfigFilePath, output);
             return this;
         }
+
         private ConfigModel Load()
         {
             if (!File.Exists(ConfigFilePath))
@@ -32,7 +33,7 @@ namespace EntityManager
             ConfigModel model = JsonConvert.DeserializeObject<ConfigModel>(fileContent);
             
             if (model == null)
-                model = new ConfigModel();
+               return new ConfigModel();
 
             return model;
         }
