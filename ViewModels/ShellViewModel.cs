@@ -6,6 +6,7 @@ using System.Windows;
 using Caliburn.Micro;
 using EntityManager.ConfigManagers;
 using EntityManager.Models;
+using EntityManager.Writers;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace EntityManager.ViewModels
@@ -78,7 +79,14 @@ namespace EntityManager.ViewModels
         #region Buttons
         public void Generate(string repositoryPath)
         {
+            var sqlWriter = new SqlWriter(SqlSchemaPath);
+            sqlWriter.Write(this);
 
+            var vbaWriter = new VbaWriter(EntityFullPath);
+            vbaWriter.Write(this);
+
+            var xmlWriter = new XmlWriter(XmlPath);
+            xmlWriter.Write(this);
         }
 
         public bool CanGenerate(string repositoryPath)
