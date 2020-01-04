@@ -15,8 +15,8 @@ namespace EntityManager.ViewModels
     public class ShellViewModel : Screen
     {
         #region Private variables
-        private const string version = "1.0.0";
-        private const string myName = "EntityManager";
+        private const string AppVersion = "1.0.0";
+        private const string AppName = "EntityManager";
         private Dictionary<string, string> entitiyMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private IConfigManager configManager;
         #endregion
@@ -104,7 +104,8 @@ namespace EntityManager.ViewModels
 
         public void Load(string repositoryPath)
         {
-
+            GetEntityMapping();
+            MessageBox.Show("Entities loaded", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public bool CanLoad(string repositoryPath)
@@ -148,7 +149,7 @@ namespace EntityManager.ViewModels
         public void Clear()
         {
             if (MessageBoxResult.Yes == MessageBox.Show(
-                "Are you sure?", $"{ myName } { version }", MessageBoxButton.YesNo, MessageBoxImage.Question))
+                "Are you sure?", $"{ AppName } { AppVersion }", MessageBoxButton.YesNo, MessageBoxImage.Question))
             {
                 LoadInitialData();
             }
@@ -166,6 +167,7 @@ namespace EntityManager.ViewModels
         private string EntityFullPath => $"{ EntitiesDirectory }\\{ Entity.LongName }.cls";
         private string XmlPath => $"{ RepositoryPath }\\entity_mapping.xml";
         private string ObjectsFactoryPath => $"{ EntitiesDirectory }\\ObjectsFactory.bas";
+        private string MessageBoxCaption => $"{ AppName } { AppVersion }";
         private void InitializeConfiguration()
         {
             string configJsonPath = $"{ Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\EntityManager.settings.json";
