@@ -25,12 +25,9 @@ namespace EntityManager
 
         public static string DropSuffix(this string input, string suffix)
         {
-            var lcaseInput = input.ToLower();
-            var lcaseSuffix = suffix.ToLower();
-
-            if (lcaseInput.EndsWith(lcaseSuffix))
+            if (input.EndsWith(suffix))
             {
-                return input.Remove(lcaseInput.Length - lcaseSuffix.Length);
+                return input.Remove(input.Length - suffix.Length);
             }
             return input;
         }
@@ -61,6 +58,11 @@ namespace EntityManager
             }
 
             return result;
+        }
+
+        public static string Indent(this string input, int level = 0)
+        {
+            return input.Insert(0,new string(' ', level * 4));
         }
     }
 }
