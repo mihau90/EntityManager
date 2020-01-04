@@ -126,6 +126,11 @@ namespace EntityManager.ViewModels
             RepositoryPath = string.Empty;
         }
 
+        public void Clear()
+        {
+
+        }
+
         private void UpdateConfig()
         {
             configManager.Config.RepositoryPath = RepositoryPath;
