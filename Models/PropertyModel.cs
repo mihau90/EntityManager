@@ -82,7 +82,15 @@ namespace EntityManager.Models
             get { return _relation; }
             set
             {
-                _relation = value;
+                if (!IsAllAddInType)
+                {
+                    _relation = RelationType.None;
+                }
+                else
+                {
+                    _relation = value;
+                }
+
                 NotifyOfPropertyChange(() => Relation);
             }
         }
@@ -121,7 +129,44 @@ namespace EntityManager.Models
                 return PropertyType.ToLower().StartsWith("allentities");
             }
         }
+        public bool IsParent
+        {
+            get
+            {
+                if (PropertyName == "parent")
+                    return true;
 
+                return false;
+            }
+        }
+        public bool IsChild
+        {
+            get
+            {
+                if (PropertyName == "items")
+                    return true;
+
+                return false;
+            }
+        }
+
+        public PropertyModel SetRelation()
+        {
+            if (!IsAllAddInType)
+            {
+                Relation = RelationType.None;
+                return this;
+            }
+
+            if (IsChild)
+            {
+                Relation = RelationType.OneToMany;
+                return this;
+            }
+
+            Relation = RelationType.ManyToOne;
+            return this;
+        }
         public PropertyModel SetPropertyDefaultValue()
         {
             if (string.IsNullOrEmpty(PropertyType))
@@ -162,22 +207,39 @@ namespace EntityManager.Models
             }
 
             return this;
-        }
 
+        }
         public PropertyModel SetDefaultColumn()
         {
-            ColumnName = PropertyName.ToSnakeCase();
-
             if (string.IsNullOrEmpty(PropertyType))
             {
                 return this;
             }
 
-            if (IsAllAddInType || PropertyName == "id")
+            if (PropertyName == "id")
             {
+                ColumnName = "id";
                 ColumnType = "CHAR";
                 CharLimit = 38;
                 return this;
+            }
+
+            if (IsAllAddInType)
+            {
+                ColumnName = $"{PropertyName}_id";
+                ColumnType = "CHAR";
+                CharLimit = 38;
+                return this;
+            }
+
+            if (IsChild)
+            {
+                ColumnName = "id";
+            }
+            else
+            {
+                ColumnName = PropertyName.ToSnakeCase();
+
             }
 
             switch (PropertyType.ToLower())
@@ -204,6 +266,55 @@ namespace EntityManager.Models
                     break;
             }
 
+            return this;
+        }
+        public PropertyModel SetPropertyType()
+        {
+            if (string.IsNullOrEmpty(PropertyType))
+            {
+                return this;
+            }
+
+            switch (PropertyType.ToLower())
+            {
+                case "str":
+                case "st":
+                case "s":
+                    PropertyType = "string";
+                    break;
+
+                case "int":
+                case "i":
+                case "l":
+                    PropertyType = "long";
+                    break;
+
+                case "dt":
+                    PropertyType = "date";
+                    break;
+
+                case "d":
+                case "dbl":
+                    PropertyType = "double";
+                    break;
+            }
+
+            return this;
+        }
+        public PropertyModel SetParentProperties(string propertyType)
+        {
+            PropertyType = propertyType;
+            SetRelation();
+            SetDefaultColumn();
+            SetPropertyDefaultValue();
+            return this;
+        }
+        public PropertyModel SetChildProperties(string propertyType)
+        {
+            PropertyType = propertyType;
+            SetRelation();
+            SetDefaultColumn();
+            SetPropertyDefaultValue();
             return this;
         }
     }
