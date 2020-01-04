@@ -115,7 +115,12 @@ namespace EntityManager.ViewModels
 
         public void AutoFillIn(string repositoryPath)
         {
+            var autoFiller = new PropertyAutofiller(entitiyMapping, Entity);
 
+            foreach (var property in Properties)
+            {
+                autoFiller.AutoFill(property);
+            }
         }
 
         public bool CanAutoFillIn(string repositoryPath)
