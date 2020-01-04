@@ -6,6 +6,7 @@ using System.Windows;
 using Caliburn.Micro;
 using EntityManager.ConfigManagers;
 using EntityManager.Models;
+using EntityManager.Readers;
 using EntityManager.Writers;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -87,11 +88,18 @@ namespace EntityManager.ViewModels
 
             var xmlWriter = new XmlWriter(XmlPath);
             xmlWriter.Write(this);
+
+            var objectsFactoryReader = new ObjectsFactoryReader(ObjectsFactoryPath);
+            var objectsFactory = objectsFactoryReader.Read();
+            objectsFactory.AddFunction(Entity.FullName);
+
+            var objectsFactoryWriter = new ObjectsFactoryWriter(ObjectsFactoryPath);
+            objectsFactoryWriter.Write(objectsFactory);
         }
 
         public bool CanGenerate(string repositoryPath)
         {
-            return true;
+            return CanLoad(repositoryPath);
         }
 
         public void Load(string repositoryPath)
