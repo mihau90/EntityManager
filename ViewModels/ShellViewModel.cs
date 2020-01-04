@@ -11,30 +11,28 @@ namespace EntityManager.ViewModels
 {
     public class ShellViewModel : Screen
     {
-        #region Properties
-        private const string Version = "1.0.0";
-        private readonly string myName = "EntityManager";
+        #region Private Variables
+        private const string version = "1.0.0";
+        private const string myName = "EntityManager";
+        private Dictionary<string, string> entitiyMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private IConfigManager configManager;
+        #endregion
+
+        #region Properties
         private string _repositoryPath = string.Empty;
         private string _tableName = string.Empty;
         private EntityModel _entity;
         private BindableCollection<PropertyModel> _properties;
-        private Dictionary<string, string> _entitiyMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        private string EntitiesDirectory => $"{ RepositoryPath }\\src\\AllEntities";
-        private string SqlSchemaPath => $"{ RepositoryPath }\\assets\\db_schema.sql";
-        private string EntityFullPath => $"{ EntitiesDirectory }\\{ Entity.LongName }.cls";
-        private string XmlPath => $"{ RepositoryPath }\\entity_mapping.xml";
-        private string ObjectsFactoryPath => $"{ EntitiesDirectory }\\ObjectsFactory.bas";
-        public int GetMaxTypeLenght() => Properties.Max(x => x.PropertyType.Length);
-        public int GetMaxNameLenght() => Properties.Max(x => x.PropertyName.Length);
-
         public string RepositoryPath
         {
             get { return _repositoryPath; }
             set
             {
-                _repositoryPath = value;
-                NotifyOfPropertyChange(() => RepositoryPath);
+                if (Directory.Exists(value))
+                {
+                    _repositoryPath = value;
+                    NotifyOfPropertyChange(() => RepositoryPath);
+                }
             }
         }
         public string TableName
@@ -67,12 +65,20 @@ namespace EntityManager.ViewModels
         }
         #endregion
 
+
+        public int GetMaxTypeLenght() => Properties.Max(x => x.PropertyType.Length);
+        public int GetMaxNameLenght() => Properties.Max(x => x.PropertyName.Length);
+
+        #region Constructor
         public ShellViewModel()
         {
-            string configJsonPath = $"{ Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\EntityManager.settings.json";
-            configManager = new JsonConfigManager(configJsonPath);
+            InitializeConfiguration();
+            GetEntityMapping();
+            LoadInitialData();
         }
+        #endregion
 
+        #region Buttons
         public void Generate(string repositoryPath)
         {
 
@@ -130,11 +136,51 @@ namespace EntityManager.ViewModels
         {
 
         }
+        #endregion
 
+        #region Private methods
+        private string EntitiesDirectory => $"{ RepositoryPath }\\src\\AllEntities";
+        private string SqlSchemaPath => $"{ RepositoryPath }\\assets\\db_schema.sql";
+        private string EntityFullPath => $"{ EntitiesDirectory }\\{ Entity.LongName }.cls";
+        private string XmlPath => $"{ RepositoryPath }\\entity_mapping.xml";
+        private string ObjectsFactoryPath => $"{ EntitiesDirectory }\\ObjectsFactory.bas";
+        private void InitializeConfiguration()
+        {
+            string configJsonPath = $"{ Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\\EntityManager.settings.json";
+            configManager = new JsonConfigManager(configJsonPath);
+
+            RepositoryPath = configManager.Config.RepositoryPath;
+        }
         private void UpdateConfig()
         {
             configManager.Config.RepositoryPath = RepositoryPath;
             configManager.Save();
         }
+        private void GetEntityMapping()
+        {
+            entitiyMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            if (!string.IsNullOrEmpty(RepositoryPath))
+            {
+                return;
+            }
+
+            var entityFiles = Directory.GetFiles(EntitiesDirectory, "*Entity.cls");
+
+            foreach (var entityFile in entityFiles)
+            {
+                var entityName = Path.GetFileNameWithoutExtension(entityFile);
+                var mappingValue = $"AllEntities.{ entityName }";
+
+                entitiyMapping[entityName.DropSuffix("Entity")] = mappingValue;
+                entitiyMapping[entityName] = mappingValue;
+                entitiyMapping[$"AllEntities.{ entityName }"] = mappingValue;
+            }
+        }
+        private void LoadInitialData()
+        {
+
+        }
+        #endregion
     }
 }
