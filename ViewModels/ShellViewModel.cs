@@ -110,7 +110,7 @@ namespace EntityManager.ViewModels
 
         public bool CanLoad(string repositoryPath)
         {
-            return true;
+            return Directory.Exists(repositoryPath) && Directory.Exists(EntitiesDirectory);
         }
 
         public void AutoFillIn(string repositoryPath)
