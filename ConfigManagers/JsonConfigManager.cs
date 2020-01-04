@@ -4,12 +4,12 @@ using System.IO;
 
 namespace EntityManager.ConfigManagers
 {
-    public class ConfigManager : IConfigManager
+    public class JsonConfigManager : IConfigManager
     {
         public ConfigModel Config { get; private set; }
         public string ConfigFilePath { get; private set; }
 
-        public ConfigManager(string configFilePath)
+        public JsonConfigManager(string configFilePath)
         {
             this.ConfigFilePath = configFilePath;
             Config = Load();
