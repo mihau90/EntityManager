@@ -22,7 +22,7 @@ namespace EntityManager.ViewModels
         #endregion
 
         #region Properties
-        private string _repositoryPath = string.Empty;
+        private string _repositoryPath;
         private string _tableName = string.Empty;
         private EntityModel _entity;
         private BindableCollection<PropertyModel> _properties;
@@ -80,21 +80,31 @@ namespace EntityManager.ViewModels
         #region Buttons
         public void Generate(string repositoryPath)
         {
-            var sqlWriter = new SqlWriter(SqlSchemaPath);
-            sqlWriter.Write(this);
+            try
+            {
+                var sqlWriter = new SqlWriter(SqlSchemaPath);
+                sqlWriter.Write(this);
 
-            var vbaWriter = new VbaWriter(EntityFullPath);
-            vbaWriter.Write(this);
+                var vbaWriter = new VbaWriter(EntityFullPath);
+                vbaWriter.Write(this);
 
-            var xmlWriter = new XmlWriter(XmlPath);
-            xmlWriter.Write(this);
+                var xmlWriter = new XmlWriter(XmlPath);
+                xmlWriter.Write(this);
 
-            var objectsFactoryReader = new ObjectsFactoryReader(ObjectsFactoryPath);
-            var objectsFactory = objectsFactoryReader.Read();
-            objectsFactory.AddFunction(Entity.FullName);
+                var objectsFactoryReader = new ObjectsFactoryReader(ObjectsFactoryPath);
+                var objectsFactory = objectsFactoryReader.Read();
+                objectsFactory.AddFunction(Entity.FullName);
 
-            var objectsFactoryWriter = new ObjectsFactoryWriter(ObjectsFactoryPath);
-            objectsFactoryWriter.Write(objectsFactory);
+                var objectsFactoryWriter = new ObjectsFactoryWriter(ObjectsFactoryPath);
+                objectsFactoryWriter.Write(objectsFactory);
+                
+                MessageBox.Show("Code generated!", MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Asterisk);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), MessageBoxCaption, MessageBoxButton.OK,MessageBoxImage.Error);
+            }
+
         }
 
         public bool CanGenerate(string repositoryPath)
@@ -110,11 +120,16 @@ namespace EntityManager.ViewModels
 
         public bool CanLoad(string repositoryPath)
         {
-            return Directory.Exists(repositoryPath) && Directory.Exists(EntitiesDirectory);
+            return Directory.Exists(repositoryPath);
         }
 
         public void AutoFillIn(string repositoryPath)
         {
+            if (string.IsNullOrEmpty(TableName))
+            {
+                TableName = $"{ Entity.ShortName.ToSnakeCase() }s";
+            }
+
             var autoFiller = new PropertyAutofiller(entitiyMapping, Entity);
 
             foreach (var property in Properties)
@@ -125,7 +140,7 @@ namespace EntityManager.ViewModels
 
         public bool CanAutoFillIn(string repositoryPath)
         {
-            return true;
+            return CanLoad(repositoryPath);
         }
 
         public void PickDirectory()
@@ -189,10 +204,15 @@ namespace EntityManager.ViewModels
         {
             entitiyMapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            if (!string.IsNullOrEmpty(RepositoryPath))
+            if (string.IsNullOrEmpty(RepositoryPath) || RepositoryPath == string.Empty)
             {
                 return;
             }
+            if (!Directory.Exists(EntitiesDirectory))
+            {
+                return;
+            }
+
 
             var entityFiles = Directory.GetFiles(EntitiesDirectory, "*Entity.cls");
 
