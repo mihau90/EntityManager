@@ -169,6 +169,11 @@ namespace EntityManager.Models
         }
         public PropertyModel SetPropertyDefaultValue()
         {
+            if (!string.IsNullOrEmpty(PropertyDefaultValue))
+            {
+                return this;
+            }
+
             if (string.IsNullOrEmpty(PropertyType))
             {
                 return this;
@@ -216,17 +221,11 @@ namespace EntityManager.Models
                 return this;
             }
 
+            ColumnName = PropertyName.ToSnakeCase();
+
             if (PropertyName == "id")
             {
                 ColumnName = "id";
-                ColumnType = "CHAR";
-                CharLimit = 38;
-                return this;
-            }
-
-            if (IsAllAddInType)
-            {
-                ColumnName = $"{PropertyName}_id";
                 ColumnType = "CHAR";
                 CharLimit = 38;
                 return this;
@@ -236,10 +235,13 @@ namespace EntityManager.Models
             {
                 ColumnName = "id";
             }
-            else
-            {
-                ColumnName = PropertyName.ToSnakeCase();
 
+            if (IsAllAddInType)
+            {
+                ColumnName = $"{PropertyName}_id";
+                ColumnType = "CHAR";
+                CharLimit = 38;
+                return this;
             }
 
             switch (PropertyType.ToLower())
