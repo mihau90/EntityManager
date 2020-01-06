@@ -27,7 +27,7 @@ namespace EntityManager.Writers
             var xmlCodeGenerator = new XMLCodeGenerator();
             var xmlCode = xmlCodeGenerator.Generate(model);
 
-            var entityDefinitionPattern = $@"<entity name=.{ model.Entity.FullName }.[\s\S]*?</entity>";
+            var entityDefinitionPattern = $@" *<entity name=.{ model.Entity.FullName }.[\s\S]*?</entity>";
             var regex = new Regex(entityDefinitionPattern);
             var entityExists = regex.IsMatch(fileContents);
 
