@@ -35,9 +35,10 @@ namespace EntityManager
                 property.PropertyType = AlladdinEntities[property.PropertyName];
             }
 
-            property.SetRelation();
-            property.SetDefaultColumn();
-            property.SetPropertyDefaultValue();
+            property.SetRelation()
+                .SetPropertyType()
+                .SetDefaultColumn()
+                .SetPropertyDefaultValue();
         }
     }
 }
