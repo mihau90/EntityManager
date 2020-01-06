@@ -85,11 +85,11 @@ namespace EntityManager.CodeGenerators
             var propertyType = (property.IsAllAddInType) ? "String" : property.PropertyType;
 
             return
-                $"<property " +
+                ($"<property " +
                 $"name=\"{ property.PropertyName }\" " +
                 $"column=\"{ property.ColumnName }\" " +
                 $"type=\"{ propertyType }\" " +
-                $"column-definition=\"{ property.ColumnDefinition }\" />".Indent(3);
+                $"column-definition=\"{ property.ColumnDefinition }\" />").Indent(3);
         }
         private string GenerateRelation(PropertyModel property)
         {
@@ -109,7 +109,7 @@ namespace EntityManager.CodeGenerators
                 case Enums.RelationType.OneToMany:
                     relationType = property.Relation.ToString();
                     propertyName = property.PropertyName;
-                    targetEntity = property.PropertyType;
+                    targetEntity = property.PropertyType.DropSuffix("[]");
                     targetColumn = property.ColumnName;
                     sourceColumn = "id";
                     break;
@@ -130,11 +130,11 @@ namespace EntityManager.CodeGenerators
             }
 
             return
-                $"<relation type=\"{ relationType }\" " +
+                ($"<relation type=\"{ relationType }\" " +
                 $"property=\"{ propertyName }\" " +
                 $"target-entity=\"{ targetEntity }\" " +
                 $"target-column=\"{ targetColumn }\" " +
-                $"source-column=\"{ sourceColumn }\" />".Indent(3);
+                $"source-column=\"{ sourceColumn }\" />").Indent(3);
         }
     }
 }
