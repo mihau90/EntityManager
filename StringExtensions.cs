@@ -10,7 +10,7 @@ namespace EntityManager
         {
             if (string.IsNullOrEmpty(input))
             {
-                throw new Exception("Null or empty input");
+                return input;
             }
 
             var inputArray = input.ToCharArray();
@@ -23,7 +23,7 @@ namespace EntityManager
         {
             if (string.IsNullOrEmpty(input))
             {
-                throw new Exception("Null or empty input");
+                return input;
             }
 
             var inputArray = input.ToCharArray();
