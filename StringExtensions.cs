@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 
 namespace EntityManager
 {
@@ -7,20 +8,28 @@ namespace EntityManager
     {
         public static string FirstCharToUpper(this string input)
         {
-            if (!string.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(input))
             {
-                return input.First().ToString().ToUpper() + input.Substring(1);
+                throw new Exception("Null or empty input");
             }
-            return string.Empty;
+
+            var inputArray = input.ToCharArray();
+            inputArray[0] = char.ToUpper(inputArray[0]);
+
+            return new string(inputArray);
         }
 
         public static string FirstCharToLower(this string input)
         {
-            if (!string.IsNullOrEmpty(input))
+            if (string.IsNullOrEmpty(input))
             {
-                return input.First().ToString().ToLower() + input.Substring(1);
+                throw new Exception("Null or empty input");
             }
-            return string.Empty;
+
+            var inputArray = input.ToCharArray();
+            inputArray[0] = char.ToLower(inputArray[0]);
+
+            return new string(inputArray);
         }
 
         public static string DropSuffix(this string input, string suffix)
@@ -36,7 +45,7 @@ namespace EntityManager
         {
             return string.Concat(input.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
         }
-        
+
         public static string SnakeCaseToCamelCase(this string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -46,23 +55,24 @@ namespace EntityManager
 
             if (!input.Contains("_"))
             {
-                return input;
+                return input.FirstCharToLower();
             }
 
-            string[] words = input.Split("_", StringSplitOptions.RemoveEmptyEntries);
-            string result = string.Empty;
+            var words = input.Split("_", StringSplitOptions.RemoveEmptyEntries);
+            var stringBuilder = new StringBuilder();
 
             foreach (string word in words)
             {
-                result += word.Substring(0, 1).ToUpper() + word.Substring(1);
+                stringBuilder.Append(word.Substring(0, 1).ToUpper());
+                stringBuilder.Append(word.Substring(1));
             }
 
-            return result;
+            return stringBuilder.ToString().FirstCharToLower();
         }
 
         public static string Indent(this string input, int level = 0)
         {
-            return input.Insert(0,new string(' ', level * 4));
+            return input.Insert(0, new string(' ', level * 4));
         }
     }
 }
