@@ -47,7 +47,7 @@ namespace EntityManager.Readers
 
             foreach (Match match in matches)
             {
-                objectFactory.Functions.Add(new FunctionModel(match.Groups["functionType"].Value));
+                objectFactory.AddFunction(match.Groups["functionType"].Value);
             }
         }
     }

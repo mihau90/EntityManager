@@ -8,15 +8,14 @@ namespace EntityManager.Models
     {
         public string VbName { get; set; }
         public string Description { get; set; }
-        public List<FunctionModel> Functions { get; set; } = new List<FunctionModel>();
+        public ICollection<FunctionModel> Functions { get; } = new List<FunctionModel>();
 
         public int GetMaxFunctionNameLenght() => Functions.Max(f => f.VbaName.Length);
         public int GetMaxFunctionDeclarationLenght() => Functions.Max(f => f.VbaDeclaration.Length);
 
-        public ObjectsFactoryModel AddFunction(string functionType)
+        public void AddFunction(string functionType)
         {
             Functions.Add(new FunctionModel(functionType));
-            return this;
         }
     }
 }
