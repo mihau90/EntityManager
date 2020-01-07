@@ -6,7 +6,11 @@
         public string ShortName
         {
             get { return _shortName; }
-            set { _shortName = value.FirstCharToUpper(); }
+            set 
+            { 
+                if (!string.IsNullOrEmpty(value))
+                    _shortName = value.FirstCharToUpper();
+            }
         }
         public string LongName
         {
@@ -26,7 +30,7 @@
         {
             get
             {
-                return $"{ ShortName }Repository";
+                return $"AllEntities.{ ShortName }Repository";
             }
         }
     }
