@@ -70,9 +70,6 @@ namespace EntityManager
             return stringBuilder.ToString().FirstCharToLower();
         }
 
-        public static string Indent(this string input, int level = 0)
-        {
-            return input.Insert(0, new string(' ', level * 4));
-        }
+        public static string Indent(this string input, int level = 0) =>  input.Insert(0, new string(' ', level * 4));
     }
 }
