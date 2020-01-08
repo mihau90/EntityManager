@@ -17,7 +17,7 @@ namespace EntityManager.Writers
 
         public void Write(ShellViewModel model)
         {
-            string fileContents;
+            var fileContents = string.Empty;
 
             if (File.Exists(SqlFilePath))
             {
