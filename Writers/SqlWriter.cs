@@ -18,10 +18,14 @@ namespace EntityManager.Writers
         public void Write(ShellViewModel model)
         {
             string fileContents;
-            using (StreamReader reader = new StreamReader(SqlFilePath))
+
+            if (File.Exists(SqlFilePath))
             {
-                fileContents = reader.ReadToEnd();
-                reader.Close();
+                using (StreamReader reader = new StreamReader(SqlFilePath))
+                {
+                    fileContents = reader.ReadToEnd();
+                    reader.Close();
+                }
             }
 
             var sqlCodeGenerator = new SqlCodeGenerator();
